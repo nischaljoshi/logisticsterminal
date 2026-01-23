@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Logistics Terminal</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/toastify-js"
+        ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <link href="style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container py-4">
+            <div class="row mb-4 align-items-center">
+                <div class="col" style="text-align: left">
+                    <h1 class="h3 mb-0">Logistics Terminal</h1>
+                    <span class="badge bg-primary" id="page">SSCC (AI 00)</span>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-outline-secondary btn-sm">
+                        V 1.0.1
+                    </button>
+                </div>
+            </div>
+
+            <nav class="nav-tabs-container" onclick="toggleMode(event)">
+                <div
+                    id="opt-barcode"
+                    class="switch-option active"
+                    data-target="content-barcode"
+                    data-value="SSCC (AI 00)"
+                >
+                    SSCC
+                </div>
+                <div
+                    id="opt-box"
+                    class="switch-option"
+                    data-target="content-box"
+                    data-value="BOX (AI 00)"
+                >
+                    Box
+                </div>
+                <div
+                    id="opt-tools"
+                    class="switch-option"
+                    data-target="content-tools"
+                    data-value="TOOLS (AI 00)"
+                >
+                    Tools
+                </div>
+                <div
+                    id="opt-favourites"
+                    class="switch-option"
+                    data-target="content-favourites"
+                    data-value="FAVOURITES (AI 00)"
+                >
+                    Favourites
+                </div>
+                <div
+                    id="opt-logs"
+                    class="switch-option"
+                    data-target="content-logs"
+                    data-value="HISTORY LOGS (AI 00)"
+                >
+                    Logs
+                </div>
+            </nav>
+
+            <div id="content-barcode" class="tab-content active">
+                <div class="col-lg-12">
+                    <div class="card barcode-card text-center p-4">
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"
+                                >AUTO-REFRESH IN</span
+                            >
+                            <span
+                                id="timer-sscc-display"
+                                class="badge bg-light text-primary border timer-badge"
+                                >30</span
+                            >
+                        </div>
+
+                        <div class="bg-white p-3 border rounded-3 mb-4">
+                            <svg id="barcode"></svg>
+                        </div>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-6 col-md-6">
+                                <button
+                                    class="btn btn-dark w-100 py-3 fw-bold"
+                                    onclick="updateSSCCBarcode()"
+                                >
+                                    GENERATE NEXT
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-6">
+                                <button
+                                    class="btn btn-dark w-100 py-3 fw-bold"
+                                    onclick="saveSSCCFavourite()"
+                                >
+                                    SAVE & COPY
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <button
+                                    class="btn btn-outline-danger w-100 py-3"
+                                    onclick="resetToday()"
+                                >
+                                    RESET
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table
+                                class="table table-sm table-borderless text-start small mb-0"
+                            >
+                                <tr class="border-top">
+                                    <td class="text-muted">
+                                        Current Sequence:
+                                    </td>
+                                    <td
+                                        class="text-end fw-bold text-primary"
+                                        id="serial-sscc-debug"
+                                    >
+                                        -
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Standard:</td>
+                                    <td class="text-end">GS1-128 / SSCC-18</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-box" class="tab-content">
+                <div class="col-lg-12">
+                    <div class="card barcode-card text-center p-4">
+                        <div class="mb-3">
+                            <span class="text-muted d-block small mb-1"
+                                >AUTO-REFRESH IN</span
+                            >
+                            <span
+                                id="timer-box-display"
+                                class="badge bg-light text-primary border timer-badge"
+                                >30</span
+                            >
+                        </div>
+
+                        <div class="bg-white p-3 border rounded-3 mb-4">
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: center;
+                                    text-align: center;
+                                "
+                                id="qr-output"
+                            ></div>
+                            <div
+                                class="data-string"
+                                id="string-box-debug"
+                            ></div>
+                        </div>
+
+                        <div class="row"></div>
+                        <div class="form-group">
+                            <label for="gtin">Item Number (GTIN-14)</label>
+                            <input
+                                type="text"
+                                id="gtin"
+                                value="00000300135699"
+                                maxlength="14"
+                                oninput="updateLabel()"
+                            />
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="days">Days</label>
+                                    <input
+                                        type="text"
+                                        id="days"
+                                        value="0"
+                                        maxlength="14"
+                                        oninput="updateBoxBarcode()"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="minwt">Min WT</label>
+                                    <input
+                                        type="text"
+                                        id="minwt"
+                                        value="10"
+                                        oninput="updateBoxBarcode()"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="gtin">Max WT</label>
+                                    <input
+                                        type="text"
+                                        id="maxwt"
+                                        value="10"
+                                        maxlength="14"
+                                        oninput="updateBoxBarcode()"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-6 col-md-6">
+                                <button
+                                    class="btn btn-dark w-100 py-3 fw-bold"
+                                    onclick="updateBoxBarcode()"
+                                >
+                                    GENERATE NEXT
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-6">
+                                <button
+                                    class="btn btn-dark w-100 py-3 fw-bold"
+                                    onclick="saveBOXFavourite()"
+                                >
+                                    SAVE & COPY
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <button
+                                    class="btn btn-outline-danger w-100 py-3"
+                                    onclick="resetToday()"
+                                >
+                                    RESET
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table
+                                class="table table-sm table-borderless text-start small mb-0"
+                            >
+                                <tr class="border-top">
+                                    <td class="text-muted">
+                                        Current Sequence:
+                                    </td>
+                                    <td
+                                        class="text-end fw-bold text-primary"
+                                        id="serial-box-debug"
+                                    >
+                                        -
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Standard:</td>
+                                    <td class="text-end">GS1-128 / BOX-20</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-tools" class="tab-content"></div>
+
+            <div id="content-favourites" class="tab-content">
+                <div class="col-lg-12 d-lg-block" id="favouritePanel">
+                    <div class="card barcode-card p-4">
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-3"
+                        >
+                            <h5 class="mb-0">Favourites</h5>
+                            <button
+                                class="btn btn-link btn-sm p-0 text-decoration-none"
+                                onclick="exportToCSV()"
+                            >
+                                Export CSV
+                            </button>
+                        </div>
+                        <div class="log-container pe-2" id="favourites">
+                            <p class="text-muted small italic">
+                                No barcodes generated yet.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-logs" class="tab-content">
+                <div class="col-lg-12 d-lg-block" id="logPanel">
+                    <div class="card barcode-card p-4">
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-3"
+                        >
+                            <h5 class="mb-0">Session Log</h5>
+                            <button
+                                class="btn btn-link btn-sm p-0 text-decoration-none"
+                                onclick="exportToCSV()"
+                            >
+                                Export CSV
+                            </button>
+                        </div>
+                        <div class="log-container pe-2" id="history-log">
+                            <p class="text-muted small italic">
+                                No barcodes generated yet.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <p style="font-size: 10px; margin-top: 20px; color: #ccc">
+                    @2026. Logistics Termianl. Developed by Nischal Joshi.
+                </p>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
