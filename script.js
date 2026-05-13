@@ -154,7 +154,8 @@ function generateBoxCode(format = "raw") {
   const gtin = (document.getElementById("gtin")?.value || "").padEnd(14, "0");
   const counter = getDailyCounter("box_label");
   const weightValue = generateweight();
-  const fullSerial = `17485${counter.toString().padStart(3, "0")}`;
+  //const fullSerial = `17485${counter.toString().padStart(3, "0")}`;
+  const fullSerial = getFormattedDate(true, 0);
   var usebyDate = ""; // Simplified for logic
 
   const datemode = document.getElementById("days").value;
@@ -201,7 +202,7 @@ function updateBoxBarcode() {
 
   //barcodeHistory.push({ time: getTimestamp(), sscc: currentBox, type: "Box" });
   renderUI();
-  timeBoxLeft = 5;
+  timeBoxLeft = 3;
 }
 
 // --- UI Rendering ---
