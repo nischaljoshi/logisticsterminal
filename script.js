@@ -5,6 +5,7 @@ let barcodeHistory = [];
 let saveFavourites = [];
 let currentSSCC = "";
 let currentBox = "";
+let today = new Date();
 
 const qrDiv = document.getElementById("qr-output");
 const qrObj = new QRCode(qrDiv, {
@@ -55,17 +56,22 @@ function toggleMode(event) {
 
 // --- Utilities ---
 const getFormattedDate = (includeTime = false, addDay = 0) => {
-  const newDate = new Date();
+  const newDate = new Date(); // Gets current time: May 13, 2026
+
+  // This handles the calendar math (e.g., May 31 + 1 becomes June 1)
   newDate.setDate(newDate.getDate() + addDay);
 
-  //alert(newDate);
-
   const pad = (n) => n.toString().padStart(2, "0");
-  const datePart = `${newDate.getFullYear().toString().slice(-2)}${pad(newDate.getMonth())}${pad(newDate.getDate())}`;
-  //alert(datePart);
-  if (!includeTime) return datePart;
-  const timePart = `${pad(newDate.getHours())}${pad(newDate.getMinutes())}${pad(newDate.getSeconds())}`;
 
+  const yy = newDate.getFullYear().toString().slice(-2);
+  const mm = pad(newDate.getMonth() + 1); // <--- THE FIX: Add 1 here
+  const dd = pad(newDate.getDate());
+
+  const datePart = `${yy}${mm}${dd}`;
+
+  if (!includeTime) return datePart;
+
+  const timePart = `${pad(newDate.getHours())}${pad(newDate.getMinutes())}${pad(newDate.getSeconds())}`;
   return datePart + timePart;
 };
 
@@ -158,12 +164,20 @@ function generateBoxCode(format = "raw") {
   if (datemode == "0") {
     dateai = "11";
     usebyDate = getFormattedDate();
+  } else if (datemode == "") {
+    dateai = "11";
+    usebyDate = getFormattedDate();
   } else {
     dateai = "17";
-    usebyDate = getFormattedDate(false, datemode);
+    usebyDate = getFormattedDate(false, parseInt(datemode));
   }
 
+  //console.log("Use By Date :" + usebyDate);
+  //console.log("Adding 5 days:", getFormattedDate(false, parseInt(datemode)));
+
   const ai = { gtin: "01", weight: "3102", usebyDate: dateai, serial: "21" };
+
+  //alert(usebyDate);
 
   const rawString = `${ai.gtin}${gtin}${ai.weight}${weightValue}${ai.usebyDate}${usebyDate}${ai.serial}${fullSerial}`;
   const humanReadable = `(${ai.gtin})${gtin}(${ai.weight})${weightValue}(${ai.usebyDate})${usebyDate}(${ai.serial})${fullSerial}`;
