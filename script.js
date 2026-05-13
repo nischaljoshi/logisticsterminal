@@ -13,6 +13,21 @@ const qrObj = new QRCode(qrDiv, {
   correctLevel: QRCode.CorrectLevel.H,
 });
 
+//Tool
+const qrDivLocation = document.getElementById("qr-output-location");
+const qrObjLocation = new QRCode(qrDivLocation, {
+  width: 100,
+  height: 100,
+  correctLevel: QRCode.CorrectLevel.H,
+});
+
+const qrDivDate = document.getElementById("qr-output-date");
+const qrObjDate = new QRCode(qrDivDate, {
+  width: 100,
+  height: 100,
+  correctLevel: QRCode.CorrectLevel.H,
+});
+
 //Toggle Navigation Menu
 function toggleMode(event) {
   const clickedTab = event.target.closest(".switch-option");
@@ -40,12 +55,17 @@ function toggleMode(event) {
 
 // --- Utilities ---
 const getFormattedDate = (includeTime = false, addDay = 0) => {
-  const now = new Date();
-  now.setDate(now.getDate() + addDay);
+  const newDate = new Date();
+  newDate.setDate(newDate.getDate() + addDay);
+
+  alert(newDate);
+
   const pad = (n) => n.toString().padStart(2, "0");
-  const datePart = `${now.getFullYear().toString().slice(-2)}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+  const datePart = `${newDate.getFullYear().toString().slice(-2)}${pad(newDate.getMonth())}${pad(newDate.getDate())}`;
+  //alert(datePart);
   if (!includeTime) return datePart;
-  const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  const timePart = `${pad(newDate.getHours())}${pad(newDate.getMinutes())}${pad(newDate.getSeconds())}`;
+
   return datePart + timePart;
 };
 
@@ -104,11 +124,7 @@ function updateSSCCBarcode() {
     background: "transparent",
   });
 
-  barcodeHistory.push({
-    time: getTimestamp(),
-    sscc: currentSSCC,
-    type: "SSCC",
-  });
+  //barcodeHistory.push({ time: getTimestamp(), sscc: currentSSCC, type: "SSCC",  });
   renderUI();
   timeSCCLeft = 30;
 }
@@ -159,6 +175,8 @@ function generateBoxCode(format = "raw") {
   if (serialDebug) serialDebug.innerText = fullSerial;
   if (stringDebug) stringDebug.innerText = `Encoded: ${humanReadable}`;
 
+  qrObjDate.makeCode(usebyDate);
+
   return format === "raw" ? rawString : humanReadable;
 }
 
@@ -167,7 +185,7 @@ function updateBoxBarcode() {
   qrObj.clear();
   qrObj.makeCode(currentBox);
 
-  barcodeHistory.push({ time: getTimestamp(), sscc: currentBox, type: "Box" });
+  //barcodeHistory.push({ time: getTimestamp(), sscc: currentBox, type: "Box" });
   renderUI();
   timeBoxLeft = 5;
 }
@@ -294,6 +312,9 @@ function exportToCSV() {
 document.addEventListener("DOMContentLoaded", () => {
   updateSSCCBarcode();
   updateBoxBarcode();
+
+  //Make Location QR Code
+  qrObjLocation.makeCode("STOR1");
 
   // Combined Timers
   setInterval(() => {
