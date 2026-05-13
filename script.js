@@ -58,7 +58,7 @@ const getFormattedDate = (includeTime = false, addDay = 0) => {
   const newDate = new Date();
   newDate.setDate(newDate.getDate() + addDay);
 
-  alert(newDate);
+  //alert(newDate);
 
   const pad = (n) => n.toString().padStart(2, "0");
   const datePart = `${newDate.getFullYear().toString().slice(-2)}${pad(newDate.getMonth())}${pad(newDate.getDate())}`;
