@@ -384,7 +384,8 @@ document.getElementById('extractBtn').addEventListener('click', () => {
 function handleDropdownChange(selectElement) {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const targetId = selectedOption.getAttribute('data-id');
-    const targetDiv = document.getElementById(targetId);
+
+  const targetDiv = document.getElementById(targetId);
 
     if (targetDiv) {
         // Create a fake event object to match your existing toggleMode(event) signature
