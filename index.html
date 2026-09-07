@@ -35,12 +35,24 @@
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-outline-secondary btn-sm">
-                        V 1.0.1
+                        V 2.0.1
                     </button>
                 </div>
             </div>
 
-            <nav class="nav-tabs-container" onclick="toggleMode(event)">
+            <nav class="nav-dropdown-container">
+                <select id="nav-dropdown-select" class="nav-select-menu form-select" onchange="handleDropdownChange(this)">
+                    <option value="content-barcode" data-id="opt-barcode" data-value="SSCC (AI 00)" selected>SSCC</option>
+                    <option value="content-box" data-id="opt-box" data-value="BOX (AI 00)">Box</option>
+                    <option value="content-tools" data-id="opt-tools" data-value="TOOLS (AI 00)">Tools</option>
+                    <option value="content-mlogreader" data-id="opt-mlogreader" data-value="MLOGREADER (AI 00)">MLogReader</option>
+                    <option value="content-tools" data-id="opt-tihicalc" data-value="TOOLS (AI 00)" style="display: none;">Ti-Hi Calculator</option>
+                    <option value="content-favourites" data-id="opt-favourites" data-value="FAVOURITES (AI 00)">Favourites</option>
+                    <option value="content-logs" data-id="opt-logs" data-value="HISTORY LOGS (AI 00)">Logs</option>
+                </select>
+            </nav>
+
+            <nav class="nav-tabs-container" onclick="toggleMode(event)" style="display: none;">
                 <div
                     id="opt-barcode"
                     class="switch-option active"
@@ -66,12 +78,21 @@
                     Tools
                 </div>
                 <div
+                    id="opt-mlogreader"
+                    class="switch-option"
+                    data-target="content-mlogreader"
+                    data-value="MLOGREADER (AI 00)"
+                >
+                    MLogReader
+                </div>
+                <div
                     id="opt-tihicalc"
                     class="switch-option"
                     data-target="content-tools"
                     data-value="TOOLS (AI 00)"
+                    style="display: none;"
                 >
-                    Tools
+                    Ti-Hi Calculator
                 </div>
                 <div
                     id="opt-favourites"
@@ -313,6 +334,65 @@
                         id="qr-output-date"
                     ></div>
                     <div class="data-string" id="string-date-debug">DATE</div>
+                </div>
+            </div>
+
+            <div id="content-mlogreader" class="tab-content">
+                <div class="bg-white p-3 border rounded-3 mb-4">
+                    <div class="form-group">
+
+                            <textarea id="rawText" class="form-control"></textarea>
+                            <br/>
+                            <button class="btn btn-dark w-100 py-3 fw-bold" id="extractBtn">Extract & Format</button>
+<br/>
+                            <label for="rawText" style="font-size:10px;">Paste your log or raw text below to automatically extract and format the embedded JSON parameters entirely in the browser.</label>
+                </div>
+                </div>
+                <div class="bg-white p-3 border rounded-3 mb-4" id="resultCard" style="display:none;">
+                    <h3>Result</h3>
+                            <p id="operationInfo"></p>
+                            <pre id="jsonOutput"></pre>
+                </div>
+            </div>
+
+            <div id="content-tihicalc" class="tab-content" >
+                <div class="bg-white p-3 border rounded-3 mb-4">
+                    <h2>Pallet Layer & High Calculator</h2>
+
+                    <div class="form-group">
+                        <label>Layer (Boxes per single horizontal layer):</label>
+                        <input type="number" id="layerCount" value="12" min="1" oninput="calculateStack()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>High (Total number of vertical layers):</label>
+                        <input type="number" id="highCount" value="5" min="1" oninput="calculateStack()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Custom Starting/Remaining Boxes Base:</label>
+                        <input type="number" id="customRemaining" value="60" min="0" oninput="calculateStack()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Boxes Taken Out (Subtracted from Custom Base):</label>
+                        <input type="number" id="takenOutCount" value="0" min="0" oninput="calculateStack()">
+                    </div>
+
+                    <button onclick="calculateStack()">Recalculate</button>
+
+                    <div class="results" id="resultsSection">
+                        <h3>Results Summary</h3>
+                        <p><strong>Initial Total Capacity (Layer × High):</strong> <span id="initialBoxes">60</span></p>
+                        <p><strong>Custom Base Input:</strong> <span id="displayCustomBase">60</span></p>
+                        <p><strong>Boxes Taken Out:</strong> <span id="displayTakenOut">0</span></p>
+                        <p><strong>Final Remaining Boxes on Pallet:</strong> <span id="remainingBoxes" style="color: #059669; font-weight: bold;">60</span></p>
+
+                        <h4 style="margin-bottom: 5px;">Visual Stack Preview (Bottom to Top):</h4>
+                        <div class="stack-visualizer" id="visualizer">
+                            <!-- Dynamic graphical blocks will populate here -->
+                        </div>
+                    </div>
                 </div>
             </div>
 

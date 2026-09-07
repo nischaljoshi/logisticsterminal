@@ -340,3 +340,58 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("timer-box-display").innerText = timeBoxLeft;
   }, 1000);
 });
+
+//MLogReader
+document.getElementById('extractBtn').addEventListener('click', () => {
+            const rawText = document.getElementById('rawText').value;
+            const resultCard = document.getElementById('resultCard');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const operationInfo = document.getElementById('operationInfo');
+
+            resultCard.style.display = 'block';
+
+            if (!rawText.trim()) {
+                operationInfo.innerHTML = '<span class="error">Please enter some text to process.</span>';
+                jsonOutput.textContent = '';
+                return;
+            }
+
+            // Regular expressions to extract Operation and Parameters JSON
+            const paramMatch = rawText.match(/Parameters\s*(\{.*\})/s);
+            const operationMatch = rawText.match(/Operation:\s*([^\s]+)/);
+
+            if (!paramMatch) {
+                operationInfo.innerHTML = '<span class="error">No "Parameters" JSON object found in the provided text.</span>';
+                jsonOutput.textContent = '';
+                return;
+            }
+
+            try {
+                const jsonString = paramMatch[1];
+                const parsedParameters = JSON.parse(jsonString);
+                const operation = operationMatch ? operationMatch[1] : 'N/A';
+
+                operationInfo.innerHTML = `<span class="success">Operation:</span> <code>${operation}</code>`;
+                jsonOutput.textContent = JSON.stringify(parsedParameters, null, 4);
+            } catch (e) {
+                operationInfo.innerHTML = `<span class="error">Found JSON-like string, but it is invalid: ${e.message}</span>`;
+                jsonOutput.textContent = '';
+            }
+        });
+
+//Navigation Dropdown
+// Bridge function to make the select element trigger your existing toggle logic
+function handleDropdownChange(selectElement) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const targetId = selectedOption.getAttribute('data-id');
+    const targetDiv = document.getElementById(targetId);
+
+    if (targetDiv) {
+        // Create a fake event object to match your existing toggleMode(event) signature
+        const fakeEvent = {
+            target: targetDiv,
+            currentTarget: selectElement
+        };
+        toggleMode(fakeEvent);
+    }
+}
