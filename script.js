@@ -224,12 +224,13 @@ function renderList(elementId, dataArray, itemClass) {
         <div class="p-2 bg-white border-start border-4 rounded shadow-sm mb-2 ${itemClass}">
             <div class="row">
                 <div class="col-4"><div class="qrcode-container"></div></div>
-                <div class="col-8">
+                <div class="col-8 text-left">
                     <div class="d-flex justify-content-between">
                         <span class="fw-bold">${item.time}</span>
                         <span class="text-muted small">${item.type || "AI:00"}</span>
                     </div>
-                    <div class="text-primary qr-data" style="word-break: break-all;">${item.sscc}</div>
+                    <div class="text-primary text-left qr-data" style="word-break: break-all;" onclick="copyText(this)">${item.sscc}</div>
+
                 </div>
             </div>
         </div>
@@ -384,7 +385,8 @@ document.getElementById('extractBtn').addEventListener('click', () => {
 function handleDropdownChange(selectElement) {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const targetId = selectedOption.getAttribute('data-id');
-    const targetDiv = document.getElementById(targetId);
+
+  const targetDiv = document.getElementById(targetId);
 
     if (targetDiv) {
         // Create a fake event object to match your existing toggleMode(event) signature
@@ -395,3 +397,100 @@ function handleDropdownChange(selectElement) {
         toggleMode(fakeEvent);
     }
 }
+
+// JavaScript
+function copyText(element) {
+  // Get the text inside the div
+  const textToCopy = element.innerText;
+
+  // Copy the text to the clipboard
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => {
+      alert("Text copied to clipboard!");
+    })
+    .catch(err => {
+      console.error("Failed to copy text: ", err);
+    });
+}
+
+function calculateStack() {
+       const layer = parseInt(document.getElementById('layerCount').value) || 0;
+       const high = parseInt(document.getElementById('highCount').value) || 0;
+       const totalInitial = layer * high;
+
+       let customInput = document.getElementById('customRemaining');
+       let takenInput = document.getElementById('takenOutCount');
+
+       let customBase = parseInt(customInput.value);
+       let takenOut = parseInt(takenInput.value);
+
+       if (isNaN(customBase)) customBase = 0;
+       if (isNaN(takenOut)) takenOut = 0;
+
+       // Guardrails: Custom base cannot exceed total capacity (Layer * High)
+       if (customBase > totalInitial) {
+           customBase = totalInitial;
+           customInput.value = totalInitial;
+       } else if (customBase < 0) {
+           customBase = 0;
+           customInput.value = 0;
+       }
+
+       // Guardrails: Taken out cannot exceed the custom base amount
+       if (takenOut > customBase) {
+           takenOut = customBase;
+           takenInput.value = customBase;
+       } else if (takenOut < 0) {
+           takenOut = 0;
+           takenInput.value = 0;
+       }
+
+       // Final calculation: Subtract taken out from the custom base
+       const finalRemaining = customBase - takenOut;
+
+       // Update text output fields
+       document.getElementById('initialBoxes').innerText = totalInitial;
+       document.getElementById('displayCustomBase').innerText = customBase;
+       document.getElementById('displayTakenOut').innerText = takenOut;
+       document.getElementById('remainingBoxes').innerText = finalRemaining;
+
+       // Generate visual block representation
+       const visualizer = document.getElementById('visualizer');
+       visualizer.innerHTML = '';
+
+       const maxDisplayLayers = Math.min(high, 30);
+       let boxesProcessed = 0;
+
+       for (let h = 1; h <= maxDisplayLayers; h++) {
+           const layerRow = document.createElement('div');
+           layerRow.className = 'layer-row';
+
+           const visualBoxes = Math.min(layer, 20);
+
+           for (let b = 1; b <= visualBoxes; b++) {
+               boxesProcessed++;
+               const box = document.createElement('div');
+               box.className = 'box-unit';
+               box.innerText = h;
+
+               // Grey out boxes exceeding the final remaining count (removed from top-down)
+               if (boxesProcessed > finalRemaining) {
+                   box.classList.add('removed');
+               }
+
+               layerRow.appendChild(box);
+           }
+           visualizer.appendChild(layerRow);
+       }
+
+       if (high > 30) {
+           const warning = document.createElement('div');
+           warning.style.color = '#e11d48';
+           warning.style.fontSize = '12px';
+           warning.innerText = `Note: Visual truncated. Showing bounds (${high} total layers configured).`;
+           visualizer.appendChild(warning);
+       }
+   }
+
+   // Run on initial page load
+   calculateStack();

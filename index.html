@@ -46,7 +46,7 @@
                     <option value="content-box" data-id="opt-box" data-value="BOX (AI 00)">Box</option>
                     <option value="content-tools" data-id="opt-tools" data-value="TOOLS (AI 00)">Tools</option>
                     <option value="content-mlogreader" data-id="opt-mlogreader" data-value="MLOGREADER (AI 00)">MLogReader</option>
-                    <option value="content-tools" data-id="opt-tihicalc" data-value="TOOLS (AI 00)" style="display: none;">Ti-Hi Calculator</option>
+                    <option value="content-tihicalc" data-id="opt-tihicalc" data-value="TIHICALC (AI 00)">Ti-Hi Calculator</option>
                     <option value="content-favourites" data-id="opt-favourites" data-value="FAVOURITES (AI 00)">Favourites</option>
                     <option value="content-logs" data-id="opt-logs" data-value="HISTORY LOGS (AI 00)">Logs</option>
                 </select>
@@ -88,9 +88,8 @@
                 <div
                     id="opt-tihicalc"
                     class="switch-option"
-                    data-target="content-tools"
-                    data-value="TOOLS (AI 00)"
-                    style="display: none;"
+                    data-target="content-tihicalc"
+                    data-value="TIHICALC (AI 00)"
                 >
                     Ti-Hi Calculator
                 </div>
@@ -359,36 +358,39 @@
                 <div class="bg-white p-3 border rounded-3 mb-4">
                     <h2>Pallet Layer & High Calculator</h2>
 
-                    <div class="form-group">
+                    <div class="row">
+                    <div class="form-group col-6">
                         <label>Layer (Boxes per single horizontal layer):</label>
                         <input type="number" id="layerCount" value="12" min="1" oninput="calculateStack()">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group col-6">
                         <label>High (Total number of vertical layers):</label>
                         <input type="number" id="highCount" value="5" min="1" oninput="calculateStack()">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group col-6">
                         <label>Custom Starting/Remaining Boxes Base:</label>
                         <input type="number" id="customRemaining" value="60" min="0" oninput="calculateStack()">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group col-6">
                         <label>Boxes Taken Out (Subtracted from Custom Base):</label>
                         <input type="number" id="takenOutCount" value="0" min="0" oninput="calculateStack()">
                     </div>
 
-                    <button onclick="calculateStack()">Recalculate</button>
+                    </div>
 
-                    <div class="results" id="resultsSection">
+                    <button class="btn btn-dark w-100 py-3 fw-bold" onclick="calculateStack()">Recalculate</button>
+
+                    <div class="results" id="resultsSection" style="margin-top: 30px; text-align: left;">
                         <h3>Results Summary</h3>
                         <p><strong>Initial Total Capacity (Layer × High):</strong> <span id="initialBoxes">60</span></p>
                         <p><strong>Custom Base Input:</strong> <span id="displayCustomBase">60</span></p>
                         <p><strong>Boxes Taken Out:</strong> <span id="displayTakenOut">0</span></p>
                         <p><strong>Final Remaining Boxes on Pallet:</strong> <span id="remainingBoxes" style="color: #059669; font-weight: bold;">60</span></p>
 
-                        <h4 style="margin-bottom: 5px;">Visual Stack Preview (Bottom to Top):</h4>
+                        <h4 style="margin-bottom: 5px;">Visual Stack Preview </h4>
                         <div class="stack-visualizer" id="visualizer">
                             <!-- Dynamic graphical blocks will populate here -->
                         </div>

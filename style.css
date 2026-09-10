@@ -185,3 +185,41 @@ pre {
             color: #5cb85c;
             font-weight: bold;
         }
+        /* Graphical representation container */
+                .stack-visualizer {
+                    margin-top: 20px;
+                    display: flex;
+                    flex-direction: column-reverse; /* Stacks layers from bottom up */
+                    align-items: center;
+                    gap: 4px;
+                    max-height: 300px;
+                    overflow-y: auto;
+                    padding: 10px;
+                    border: 2px dashed #b0c4de;
+                    background: #fafbfc;
+                }
+                .layer-row {
+                    display: flex;
+                    gap: 3px;
+                    justify-content: center;
+                    width: 100%;
+                }
+                .box-unit {
+                    background-color: #3b82f6;
+                    color: white;
+                    font-size: 10px;
+                    height: 25px;
+                    flex: 1;
+                    max-width: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 3px;
+                    border: 1px solid #2563eb;
+                }
+                .box-unit.removed {
+                    background-color: #cbd5e1;
+                    border-color: #94a3b8;
+                    color: #94a3b8;
+                    text-decoration: line-through;
+                }
