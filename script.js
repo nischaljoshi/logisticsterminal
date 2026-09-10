@@ -406,10 +406,25 @@ function copyText(element) {
   // Copy the text to the clipboard
   navigator.clipboard.writeText(textToCopy)
     .then(() => {
-      alert("Text copied to clipboard!");
+
+      Toastify({
+        text: "Copied to Clipboard: " + textToCopy,
+        style: { background: "#198754" },
+        duration: 2000,
+        gravity: "bottom",
+        position: "center",
+      }).showToast();
     })
     .catch(err => {
       console.error("Failed to copy text: ", err);
+
+      Toastify({
+        text: "Error",
+        style: { background: "#FF6147" },
+        duration: 2000,
+        gravity: "bottom",
+        position: "center",
+      }).showToast();
     });
 }
 
