@@ -473,14 +473,14 @@ function calculateStack() {
        const visualizer = document.getElementById('visualizer');
        visualizer.innerHTML = '';
 
-       const maxDisplayLayers = Math.min(high, 30);
+       const maxDisplayLayers = Math.min(high, 50);
        let boxesProcessed = 0;
 
        for (let h = 1; h <= maxDisplayLayers; h++) {
            const layerRow = document.createElement('div');
            layerRow.className = 'layer-row';
 
-           const visualBoxes = Math.min(layer, 20);
+           const visualBoxes = Math.min(layer, 50);
 
            for (let b = 1; b <= visualBoxes; b++) {
                boxesProcessed++;
@@ -498,7 +498,7 @@ function calculateStack() {
            visualizer.appendChild(layerRow);
        }
 
-       if (high > 30) {
+       if (high > 50) {
            const warning = document.createElement('div');
            warning.style.color = '#e11d48';
            warning.style.fontSize = '12px';
